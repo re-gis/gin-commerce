@@ -7,7 +7,7 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) *gin.Engine {
-	r.POST("/users/login")
+	r.POST("/users/login", users.LoginUser)
 	r.POST("/users/register", users.RegisterUser)
 
 	protected := r.Group("/")

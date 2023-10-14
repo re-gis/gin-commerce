@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/re-gis/gin-commerce/database"
 	"github.com/re-gis/gin-commerce/routes"
 )
 
@@ -17,6 +18,9 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	// Database
+	database.Connect()
 
 	// ROutes setup
 	routes.SetupRoutes(r)
