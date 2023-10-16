@@ -46,7 +46,7 @@ func ParseToken(tokenString string) (uint, error) {
 			return nil, fmt.Errorf("unexpected signing method")
 		}
 
-		return jwtKey, nil
+		return []byte(jwtKey), nil
 	})
 
 	if err != nil {

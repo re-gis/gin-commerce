@@ -30,9 +30,12 @@ func setupProductRoutes(rg *gin.RouterGroup) {
 }
 
 func setupUserRoutes(rg *gin.RouterGroup) {
-	users := rg.Group("/users")
+	usersRoute := rg.Group("/users")
 	{
-		users.GET("/user/all")
+		usersRoute.GET("/all", users.GetAllUsers)
+		usersRoute.PUT("/update/user/:id", users.UpdateUser)
+		usersRoute.DELETE("/delete/myAccount", users.DeleteYouAccount)
+		usersRoute.GET("/mine", users.GetYourAccount)
 	}
 }
 
