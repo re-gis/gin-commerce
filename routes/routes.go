@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/re-gis/gin-commerce/api/products"
 	"github.com/re-gis/gin-commerce/api/users"
 	"github.com/re-gis/gin-commerce/middleware"
 )
@@ -23,9 +24,10 @@ func SetupRoutes(r *gin.Engine) *gin.Engine {
 }
 
 func setupProductRoutes(rg *gin.RouterGroup) {
-	products := rg.Group("/products")
+	productsRoute := rg.Group("/products", products.GetAllProducts)
 	{
-		products.GET("/product/all")
+		productsRoute.POST("/create", products.CreateProduct)
+		productsRoute.GET("/all")
 	}
 }
 
