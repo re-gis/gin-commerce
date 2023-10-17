@@ -24,10 +24,14 @@ func SetupRoutes(r *gin.Engine) *gin.Engine {
 }
 
 func setupProductRoutes(rg *gin.RouterGroup) {
-	productsRoute := rg.Group("/products", products.GetAllProducts)
+	productsRoute := rg.Group("/products")
 	{
 		productsRoute.POST("/create", products.CreateProduct)
-		productsRoute.GET("/all")
+		productsRoute.GET("/all", products.GetAllProducts)
+		productsRoute.GET("/:id", products.GetOneProduct)
+		productsRoute.DELETE("/delete/:id", products.DeleteProduct)
+		productsRoute.PUT("/update/:id", products.UpdateProduct)
+
 	}
 }
 
