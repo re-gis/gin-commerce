@@ -20,6 +20,7 @@ type User struct {
 	Role      string    `json:"role" gorm:"default:user"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Cart      uint
 }
 
 type Order struct {
@@ -42,6 +43,7 @@ type Cart struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	UserId    uint      `json:"user_id"`
 	CreatedAt time.Time `json:"created_at"`
+	CartItems []CartItem
 }
 
 type CartItem struct {

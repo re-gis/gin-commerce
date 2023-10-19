@@ -56,7 +56,7 @@ func setupOrderRoutes(rg *gin.RouterGroup) {
 func setupCartRoutes(rg *gin.RouterGroup) {
 	cartsRoute := rg.Group("/carts")
 	{
-		cartsRoute.GET("/cart/all")
+		cartsRoute.GET("/:cart/all")
 		cartsRoute.POST("/add", carts.AddItemToCart)
 		cartsRoute.DELETE("/remove", carts.RemoveItemFromCart)
 	}
