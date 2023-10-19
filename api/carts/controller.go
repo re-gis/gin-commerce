@@ -48,6 +48,18 @@ func AddItemToCart(c *gin.Context) {
 		return
 	}
 
+	// check if product is available
+	var product database.Product
+	if err := database.DB.First(&product, addToCart.ProductId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found!"})
+		return
+	}
+
+	if product.StockQty < addToCart.Quantity {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Product in stock is not enough"})
+		return
+	}
+
 	var eCart database.Cart
 	// check if cart existed
 	if err := database.DB.First(&eCart, addToCart.CartId).Error; err != nil {

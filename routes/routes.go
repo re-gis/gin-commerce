@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/re-gis/gin-commerce/api/carts"
+	"github.com/re-gis/gin-commerce/api/orders"
 	"github.com/re-gis/gin-commerce/api/products"
 	"github.com/re-gis/gin-commerce/api/users"
 	"github.com/re-gis/gin-commerce/middleware"
@@ -49,7 +50,7 @@ func setupUserRoutes(rg *gin.RouterGroup) {
 func setupOrderRoutes(rg *gin.RouterGroup) {
 	ordersRoute := rg.Group("/orders")
 	{
-		ordersRoute.GET("/order/all")
+		ordersRoute.POST("/order/place-order", orders.PlaceOrder)
 	}
 }
 
