@@ -1,6 +1,7 @@
 package orders
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/re-gis/gin-commerce/database"
 	"net/http"
@@ -37,5 +38,43 @@ func PlaceOrder(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "No cart items found!"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"cartitems": cartItems})
+	// create the order
+	var order database.Order
+	//var orderItems []database.OrderItem
+
+	order.Status = "PENDING"
+	order.UserId = user.ID
+	order.Cart = cart.ID
+	if err := database.DB.Create(&order).Error; err != nil {
+		fmt.Print(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while saving the order"})
+		return
+	}
+
+	if err := database.DB.Delete(&cartItems).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while clearing the cart"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order placed successfully!"})
+}
+
+func Deliver(c *gin.Context) {
+	userId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Login to continue"})
+		return
+	}
+
+	// check if he is admin
+	var user database.User
+	if err := database.DB.First(&user, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found!"})
+		return
+	}
+
+	if user.Role == "user" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorised to perform this action!"})
+		return
+	}
 }
