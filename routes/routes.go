@@ -50,7 +50,9 @@ func setupUserRoutes(rg *gin.RouterGroup) {
 func setupOrderRoutes(rg *gin.RouterGroup) {
 	ordersRoute := rg.Group("/orders")
 	{
-		ordersRoute.POST("/order/place-order", orders.PlaceOrder)
+		ordersRoute.POST("/place-order", orders.PlaceOrder)
+		ordersRoute.PUT("/deliver", orders.Deliver)
+		ordersRoute.DELETE("/reject", orders.RejectOrder)
 	}
 }
 

@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+type DeliverDetails struct {
+	Order uint `json:"order"`
+}
+
 func PlaceOrder(c *gin.Context) {
 	userId, exists := c.Get("userId")
 	if !exists {
@@ -77,4 +81,69 @@ func Deliver(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorised to perform this action!"})
 		return
 	}
+
+	// bind the request
+	var DeliverDetails DeliverDetails
+	if err := c.BindJSON(&DeliverDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error while binding the request body"})
+		return
+	}
+
+	//get the order
+	var order database.Order
+	if err := database.DB.First(&order, DeliverDetails.Order).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while getting the order"})
+		return
+	}
+
+	//update the order
+	order.Status = "DELIVERED"
+	if err := database.DB.Save(&order).Error; err != nil {
+		fmt.Print(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while updating the order"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order delivered successfully"})
+}
+
+func RejectOrder(c *gin.Context) {
+	//get user
+	userId, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Login to continue"})
+		return
+	}
+
+	var user database.User
+	if err := database.DB.First(&user, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found!"})
+		return
+	}
+
+	if user.Role == "user" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorised to perform this action"})
+		return
+	}
+
+	var DeleteDetails DeliverDetails
+	if err := c.BindJSON(&DeleteDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error while binding the data"})
+		return
+	}
+
+	var order database.Order
+	// delete the order
+	if err := database.DB.Where("id = ?", DeleteDetails.Order).First(&order).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found!"})
+		return
+	}
+
+	if err := database.DB.Delete(&order).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while deleting the order"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order rejected successfully!"})
+
 }
