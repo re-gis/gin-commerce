@@ -10,7 +10,6 @@ import (
 	"github.com/re-gis/gin-commerce/routes"
 )
 
-// I want to commit  today	
 
 func main() {
 	// Load the .env
