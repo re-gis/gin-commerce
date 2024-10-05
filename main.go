@@ -10,8 +10,6 @@ import (
 	"github.com/re-gis/gin-commerce/routes"
 )
 
-
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {
